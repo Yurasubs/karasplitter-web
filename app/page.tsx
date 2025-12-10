@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Music } from 'lucide-react';
+import { Github, Music } from "lucide-react";
 import { useState } from "react";
 import { ResultPreview } from "@/components/ResultPreview";
 import { SplitOptions } from "@/components/SplitOptions";
