@@ -329,14 +329,20 @@ export interface ProcessOptions {
 export function processAssFile(
 	content: string,
 	options: ProcessOptions,
-): string {
+): { content: string; error: string | null } {
 	const lines = content.split(/\r?\n/);
 	const outputLines: string[] = [];
 	let counter = 0;
 
 	for (const line of lines) {
 		const input = line.trim();
-		if (input.includes("Dialogue")) {
+
+		// Validation: Only accept lines starting with "Dialogue:" or "Comment:"
+		if (!input.startsWith("Dialogue:") && !input.startsWith("Comment:")) {
+			continue;
+		}
+
+		if (input.startsWith("Dialogue:")) {
 			// Python: input.split(",", 9) -> maxsplit 9
 			const inputarray = input.split(",");
 			// We need to handle the maxsplit behavior manually if we want to preserve commas in the text
@@ -383,10 +389,20 @@ export function processAssFile(
 				outputLines.push(input);
 			}
 		} else {
+			// It's a Comment: line, preserve it
 			outputLines.push(input);
 		}
 	}
 
 	console.log(`Found: ${counter} lines matching criteria`);
-	return outputLines.join("\n");
+
+	if (outputLines.length === 0) {
+		return {
+			content: "",
+			error:
+				"No valid 'Dialogue:' or 'Comment:' lines found. Please check your input.",
+		};
+	}
+
+	return { content: outputLines.join("\n"), error: null };
 }

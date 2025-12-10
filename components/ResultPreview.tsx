@@ -1,15 +1,20 @@
-import { Check, Copy, FileCheck } from "lucide-react";
-import { useState } from "react";
+import { Check, Copy, FileCheck, AlertCircle } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface ResultPreviewProps {
-	originalFilename: string;
 	processedContent: string;
+	error: string | null;
 }
 
-export function ResultPreview({ processedContent }: ResultPreviewProps) {
+export function ResultPreview({ processedContent, error }: ResultPreviewProps) {
 	const [copied, setCopied] = useState(false);
 
+	useEffect(() => {
+		setCopied(false);
+	}, [processedContent, error]);
+
 	const handleCopy = async () => {
+		if (error) return;
 		try {
 			await navigator.clipboard.writeText(processedContent);
 			setCopied(true);
@@ -18,6 +23,18 @@ export function ResultPreview({ processedContent }: ResultPreviewProps) {
 			console.error("Failed to copy text: ", err);
 		}
 	};
+
+	if (error) {
+		return (
+			<div className="bg-red-50 p-6 rounded-lg shadow-sm border border-red-200 mt-6">
+				<div className="flex items-center gap-3 text-red-700 mb-2">
+					<AlertCircle className="w-6 h-6" />
+					<span className="font-semibold">Processing Error</span>
+				</div>
+				<p className="text-red-600 text-sm">{error}</p>
+			</div>
+		);
+	}
 
 	return (
 		<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-6">

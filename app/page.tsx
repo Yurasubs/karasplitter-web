@@ -14,16 +14,17 @@ export default function Home() {
 	const [selector, setSelector] = useState<"all" | "actor" | "style">("all");
 	const [selectorValue, setSelectorValue] = useState<string>("");
 	const [processedContent, setProcessedContent] = useState<string | null>(null);
+	const [error, setError] = useState<string | null>(null);
 
 	const handleProcess = () => {
-		if (!fileContent.trim()) return;
-
+		if (!fileContent) return;
 		const result = processAssFile(fileContent, {
 			mode,
 			selector,
 			selectorValue,
 		});
-		setProcessedContent(result);
+		setProcessedContent(result.content);
+		setError(result.error);
 	};
 
 	return (
@@ -63,14 +64,14 @@ export default function Home() {
 								onChange={(val) => {
 									setFileContent(val);
 									setProcessedContent(null);
+									setError(null);
 								}}
 							/>
 						</div>
-
-						{processedContent && (
+						{(processedContent || error) && (
 							<ResultPreview
-								originalFilename={filename}
-								processedContent={processedContent}
+								processedContent={processedContent || ""}
+								error={error}
 							/>
 						)}
 					</div>
