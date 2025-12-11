@@ -7,6 +7,8 @@ interface SplitOptionsProps {
 	setSelector: (selector: "all" | "actor" | "style") => void;
 	selectorValue: string;
 	setSelectorValue: (value: string) => void;
+	actorOptions: string[];
+	styleOptions: string[];
 }
 
 export function SplitOptions({
@@ -16,7 +18,12 @@ export function SplitOptions({
 	setSelector,
 	selectorValue,
 	setSelectorValue,
+	actorOptions,
+	styleOptions,
 }: SplitOptionsProps) {
+	const currentOptions = selector === "actor" ? actorOptions : styleOptions;
+	const hasOptions = currentOptions.length > 0;
+
 	return (
 		<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-6">
 			<div>
@@ -73,16 +80,27 @@ export function SplitOptions({
 						))}
 					</div>
 
-					{selector !== "all" && (
+					{selector !== "all" && hasOptions && (
 						<div>
-							<input
-								type="text"
+							<select
 								value={selectorValue}
 								onChange={(e) => setSelectorValue(e.target.value)}
-								placeholder={`Enter ${selector} name...`}
-								className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-black"
-							/>
+								className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-black bg-white cursor-pointer"
+							>
+								<option value="">Select {selector}...</option>
+								{currentOptions.map((option) => (
+									<option key={option} value={option}>
+										{option}
+									</option>
+								))}
+							</select>
 						</div>
+					)}
+
+					{selector !== "all" && !hasOptions && (
+						<p className="text-sm text-gray-500 italic">
+							No {selector}s found. Check your .ass content.
+						</p>
 					)}
 				</div>
 			</div>

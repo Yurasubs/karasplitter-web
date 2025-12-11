@@ -1,5 +1,42 @@
 export type SplitMode = "char" | "word" | "syl";
 
+export interface ExtractedMetadata {
+	actors: string[];
+	styles: string[];
+}
+
+export function extractActorsAndStyles(content: string): ExtractedMetadata {
+	const actorsSet = new Set<string>();
+	const stylesSet = new Set<string>();
+	const lines = content.split(/\r?\n/);
+
+	for (const line of lines) {
+		const input = line.trim();
+
+		if (!input.startsWith("Dialogue:") && !input.startsWith("Comment:")) {
+			continue;
+		}
+
+		const inputarray = input.split(",");
+		if (inputarray.length >= 10) {
+			const style = inputarray[3]?.trim();
+			const actor = inputarray[4]?.trim();
+
+			if (style) {
+				stylesSet.add(style);
+			}
+			if (actor) {
+				actorsSet.add(actor);
+			}
+		}
+	}
+
+	return {
+		actors: Array.from(actorsSet).sort(),
+		styles: Array.from(stylesSet).sort(),
+	};
+}
+
 export function aegiTimeTOds(timestr: string): number {
 	const [h, m, sms] = timestr.split(":");
 	const [s, ms] = sms.split(".");

@@ -1,11 +1,15 @@
 "use client";
 
 import { Github, Music } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { ResultPreview } from "@/components/ResultPreview";
 import { SplitOptions } from "@/components/SplitOptions";
 import { TextInput } from "@/components/TextInput";
-import { processAssFile, type SplitMode } from "@/lib/ksplitter";
+import {
+	extractActorsAndStyles,
+	processAssFile,
+	type SplitMode,
+} from "@/lib/ksplitter";
 
 export default function Home() {
 	const [fileContent, setFileContent] = useState<string>("");
@@ -15,6 +19,14 @@ export default function Home() {
 	const [selectorValue, setSelectorValue] = useState<string>("");
 	const [processedContent, setProcessedContent] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
+
+	// Extract actors and styles from pasted content
+	const metadata = useMemo(() => {
+		if (!fileContent.trim()) {
+			return { actors: [], styles: [] };
+		}
+		return extractActorsAndStyles(fileContent);
+	}, [fileContent]);
 
 	const handleProcess = () => {
 		if (!fileContent) return;
@@ -68,6 +80,8 @@ export default function Home() {
 									setFileContent(val);
 									setProcessedContent(null);
 									setError(null);
+									// Reset selector value when content changes
+									setSelectorValue("");
 								}}
 							/>
 						</div>
@@ -87,6 +101,8 @@ export default function Home() {
 							setSelector={setSelector}
 							selectorValue={selectorValue}
 							setSelectorValue={setSelectorValue}
+							actorOptions={metadata.actors}
+							styleOptions={metadata.styles}
 						/>
 
 						<button
