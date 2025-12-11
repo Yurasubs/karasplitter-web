@@ -3,10 +3,11 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "next dev",
-		"build": "next build",
+		"dev": "vitest run && next dev",
+		"build": "vitest run && next build",
 		"start": "next start",
-		"format": "biome format --write ."
+		"format": "biome format --write .",
+		"test": "vitest run"
 	},
 	"dependencies": {
 		"clsx": "^2.1.1",
@@ -23,6 +24,7 @@
 		"@types/react": "^19.2.7",
 		"@types/react-dom": "^19.2.3",
 		"tailwindcss": "^4.1.17",
-		"typescript": "^5.9.3"
+		"typescript": "^5.9.3",
+		"vitest": "^4.0.15"
 	}
 }
