@@ -10,6 +10,10 @@ const getGitCommitHash = () => {
 };
 
 const nextConfig: NextConfig = {
+	output: "export",
+	images: {
+		unoptimized: true,
+	},
 	env: {
 		GIT_COMMIT_HASH: getGitCommitHash(),
 	},
