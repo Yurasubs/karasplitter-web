@@ -70,7 +70,7 @@ export function SplitOptions({
 						<span
 							className={`font-small block ${cleanKTime ? "text-blue-900" : "text-gray-700"}`}
 						>
-							Cleaner (De-Ktime)
+							Cleaner (De-ktime)
 						</span>
 					</div>
 					<div className="relative">
