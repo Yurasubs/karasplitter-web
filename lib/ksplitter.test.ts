@@ -6,6 +6,7 @@ import {
 	k_array_syl,
 	processAssFile,
 	arrTOk_str,
+	extractActorsAndStyles,
 } from "./ksplitter";
 
 describe("ksplitter", () => {
@@ -73,6 +74,117 @@ describe("ksplitter", () => {
 		});
 	});
 
+	describe("arrTOk_str", () => {
+		it("should generate karaoke timing string from syllable array", () => {
+			const syllables = ["ka", "ra", "o", "ke"];
+			const timePerletter = 50;
+			// Each syllable: timing = timePerletter * syllable.length
+			// "ka" (2) -> {\k100}ka, "ra" (2) -> {\k100}ra, "o" (1) -> {\k50}o, "ke" (2) -> {\k100}ke
+			const result = arrTOk_str(syllables, timePerletter);
+			expect(result).toBe("{\\k100}ka{\\k100}ra{\\k50}o{\\k100}ke");
+		});
+
+		it("should handle empty array", () => {
+			const result = arrTOk_str([], 50);
+			expect(result).toBe("");
+		});
+
+		it("should handle single syllable", () => {
+			const result = arrTOk_str(["a"], 100);
+			expect(result).toBe("{\\k100}a");
+		});
+
+		it("should handle syllables with spaces attached", () => {
+			const syllables = ["hello ", "world "];
+			const timePerletter = 10;
+			// "hello " (6) -> {\k60}hello , "world " (6) -> {\k60}world
+			const result = arrTOk_str(syllables, timePerletter);
+			expect(result).toBe("{\\k60}hello {\\k60}world ");
+		});
+
+		it("should handle zero time per letter", () => {
+			const result = arrTOk_str(["ka", "ra"], 0);
+			expect(result).toBe("{\\k0}ka{\\k0}ra");
+		});
+	});
+
+	describe("extractActorsAndStyles", () => {
+		it("should extract actors and styles from Dialogue lines", () => {
+			const input =
+				"Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,text";
+			const result = extractActorsAndStyles(input);
+
+			expect(result.actors).toEqual(["Singer1"]);
+			expect(result.styles).toEqual(["Default"]);
+		});
+
+		it("should extract from Comment lines as well", () => {
+			const input =
+				"Comment: 0,0:00:00.00,0:00:05.00,Karaoke,Narrator,0,0,0,,text";
+			const result = extractActorsAndStyles(input);
+
+			expect(result.actors).toEqual(["Narrator"]);
+			expect(result.styles).toEqual(["Karaoke"]);
+		});
+
+		it("should extract multiple unique actors and styles", () => {
+			const input = `
+				Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,line1
+				Dialogue: 0,0:00:05.00,0:00:10.00,Karaoke,Singer2,0,0,0,,line2
+				Dialogue: 0,0:00:10.00,0:00:15.00,Default,Singer1,0,0,0,,line3
+				Comment: 0,0:00:15.00,0:00:20.00,Chorus,Backup,0,0,0,,line4
+			`.trim();
+			const result = extractActorsAndStyles(input);
+
+			expect(result.actors).toEqual(["Backup", "Singer1", "Singer2"]);
+			expect(result.styles).toEqual(["Chorus", "Default", "Karaoke"]);
+		});
+
+		it("should return sorted arrays", () => {
+			const input = `
+				Dialogue: 0,0:00:00.00,0:00:05.00,Zebra,Charlie,0,0,0,,text
+				Dialogue: 0,0:00:05.00,0:00:10.00,Alpha,Bob,0,0,0,,text
+				Dialogue: 0,0:00:10.00,0:00:15.00,Mike,Alice,0,0,0,,text
+			`.trim();
+			const result = extractActorsAndStyles(input);
+
+			expect(result.actors).toEqual(["Alice", "Bob", "Charlie"]);
+			expect(result.styles).toEqual(["Alpha", "Mike", "Zebra"]);
+		});
+
+		it("should return empty arrays for invalid content", () => {
+			const result = extractActorsAndStyles(
+				"Invalid content\nNo dialogue here",
+			);
+
+			expect(result.actors).toEqual([]);
+			expect(result.styles).toEqual([]);
+		});
+
+		it("should handle empty actor or style fields", () => {
+			const input = `
+				Dialogue: 0,0:00:00.00,0:00:05.00,Default,,0,0,0,,text
+				Dialogue: 0,0:00:05.00,0:00:10.00,,Singer1,0,0,0,,text
+			`.trim();
+			const result = extractActorsAndStyles(input);
+
+			expect(result.actors).toEqual(["Singer1"]);
+			expect(result.styles).toEqual(["Default"]);
+		});
+
+		it("should handle lines with fewer than 10 comma-separated fields", () => {
+			const input = `
+				Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1
+				Dialogue: 0,0:00:05.00,0:00:10.00,Karaoke,Singer2,0,0,0,,valid
+			`.trim();
+			const result = extractActorsAndStyles(input);
+
+			// First line has only 5 fields, should be ignored
+			expect(result.actors).toEqual(["Singer2"]);
+			expect(result.styles).toEqual(["Karaoke"]);
+		});
+	});
+
 	describe("processAssFile", () => {
 		it("should return error for invalid input", () => {
 			const result = processAssFile("Invalid content", {
@@ -88,10 +200,6 @@ describe("ksplitter", () => {
 			const result = processAssFile(input, { mode: "syl", selector: "all" });
 
 			expect(result.error).toBeNull();
-			// Expected: "Dialogue: ...,{\k[duration]}ka{\k...}ra..."
-			// Total duration 5s = 500cs. 4 syllables (ka, ra, o, ke).
-			// timePerLetter = 500 / 7 = 71.
-			// Output checking roughly
 			expect(result.content).toContain("Dialogue:");
 			expect(result.content).toContain("{\\k");
 		});
@@ -104,19 +212,44 @@ describe("ksplitter", () => {
 			expect(result.content).toBe(input);
 		});
 
+		it("should filter by actor", () => {
+			const input = `
+				Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,hello
+				Dialogue: 0,0:00:05.00,0:00:10.00,Default,Singer2,0,0,0,,world
+			`.trim();
+			const result = processAssFile(input, {
+				mode: "char",
+				selector: "actor",
+				selectorValue: "Singer1",
+			});
+
+			expect(result.error).toBeNull();
+			// First line should be processed, second should be preserved as-is
+			expect(result.content).toContain("{\\k");
+		});
+
+		it("should filter by style", () => {
+			const input = `
+				Dialogue: 0,0:00:00.00,0:00:05.00,Karaoke,Singer1,0,0,0,,hello
+				Dialogue: 0,0:00:05.00,0:00:10.00,Default,Singer2,0,0,0,,world
+			`.trim();
+			const result = processAssFile(input, {
+				mode: "char",
+				selector: "style",
+				selectorValue: "Karaoke",
+			});
+
+			expect(result.error).toBeNull();
+			expect(result.content).toContain("{\\k");
+		});
+
 		it("should filter out invalid lines but process valid ones", () => {
 			const input = `
-            Invalid Line
-            Dialogue: 0,0:00:00.00,0:00:05.00,Default,,0,0,0,,valid
-            `.trim();
+				Invalid Line
+				Dialogue: 0,0:00:00.00,0:00:05.00,Default,,0,0,0,,valid
+			`.trim();
 			const result = processAssFile(input, { mode: "syl", selector: "all" });
 
-			// Since it contains at least one valid line, it should succeed (ignoring invalid ones)
-			// Actually, my validation logic might return error if outputLines is empty.
-			// Does validation remove invalid lines silently or fail?
-			// Code says: if (!startWith...) continue.
-			// If outputLines.length === 0 -> Error.
-			// So if there is ONE valid line, it returns success with that line.
 			expect(result.error).toBeNull();
 			expect(result.content).toContain("Dialogue:");
 			expect(result.content).not.toContain("Invalid Line");
