@@ -7,17 +7,19 @@ import { ResultPreview } from "@/components/ResultPreview";
 import { SplitOptions } from "@/components/SplitOptions";
 import { TextInput } from "@/components/TextInput";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 import {
 	extractActorsAndStyles,
 	processAssFile,
 	type SplitMode,
 } from "@/lib/ksplitter";
+import type { SelectorType } from "@/lib/types";
 
 export default function Home() {
 	const [fileContent, setFileContent] = useState<string>("");
-	const [filename, _setFilename] = useState<string>("karaoke.ass");
 	const [mode, setMode] = useState<SplitMode>("syl");
-	const [selector, setSelector] = useState<"all" | "actor" | "style">("all");
+	const [selector, setSelector] = useState<SelectorType>("all");
 	const [selectorValue, setSelectorValue] = useState<string>("");
 	const [processedContent, setProcessedContent] = useState<string | null>(null);
 	const [cleanKTime, setCleanKTime] = useState<boolean>(false);
@@ -40,6 +42,13 @@ export default function Home() {
 		});
 		setProcessedContent(result.content);
 		setError(result.error);
+	};
+
+	const handleContentChange = (val: string) => {
+		setFileContent(val);
+		setProcessedContent(null);
+		setError(null);
+		setSelectorValue("");
 	};
 
 	return (
@@ -88,17 +97,9 @@ export default function Home() {
 
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 					<div className="lg:col-span-2 space-y-6">
-						<div className="p-6 rounded-lg shadow-sm border bg-card border-card">
-							<TextInput
-								value={fileContent}
-								onChange={(val) => {
-									setFileContent(val);
-									setProcessedContent(null);
-									setError(null);
-									setSelectorValue("");
-								}}
-							/>
-						</div>
+						<Card>
+							<TextInput value={fileContent} onChange={handleContentChange} />
+						</Card>
 						{(processedContent || error) && (
 							<ResultPreview
 								processedContent={processedContent || ""}
@@ -121,14 +122,13 @@ export default function Home() {
 							setCleanKTime={setCleanKTime}
 						/>
 
-						<button
-							type="button"
+						<Button
 							onClick={handleProcess}
 							disabled={!fileContent.trim()}
-							className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-bold rounded-lg shadow-md transition-colors text-lg"
+							className="w-full py-3 px-4 text-lg"
 						>
 							Process Content
-						</button>
+						</Button>
 					</div>
 				</div>
 			</div>

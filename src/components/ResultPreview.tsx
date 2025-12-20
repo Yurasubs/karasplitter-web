@@ -1,5 +1,8 @@
 import { Check, Copy, FileCheck, AlertCircle } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+import { useClipboard } from "@/hooks/useClipboard";
+import { Card } from "@/components/ui/Card";
+import { Button } from "@/components/ui/Button";
 
 interface ResultPreviewProps {
 	processedContent: string;
@@ -7,21 +10,15 @@ interface ResultPreviewProps {
 }
 
 export function ResultPreview({ processedContent, error }: ResultPreviewProps) {
-	const [copied, setCopied] = useState(false);
+	const { copied, copyToClipboard, resetCopied } = useClipboard();
 
 	useEffect(() => {
-		setCopied(false);
-	}, [processedContent, error]);
+		resetCopied();
+	}, [processedContent, error, resetCopied]);
 
 	const handleCopy = async () => {
 		if (error) return;
-		try {
-			await navigator.clipboard.writeText(processedContent);
-			setCopied(true);
-			setTimeout(() => setCopied(false), 2000);
-		} catch (err) {
-			console.error("Failed to copy text: ", err);
-		}
+		await copyToClipboard(processedContent);
 	};
 
 	if (error) {
@@ -37,16 +34,15 @@ export function ResultPreview({ processedContent, error }: ResultPreviewProps) {
 	}
 
 	return (
-		<div className="p-6 rounded-lg shadow-sm border mt-6 bg-card border-card">
+		<Card className="mt-6">
 			<div className="flex items-center justify-between mb-4 flex-wrap gap-4">
 				<div className="flex items-center gap-2 text-green-600">
 					<FileCheck className="w-6 h-6" />
 					<span className="font-semibold">Processing Complete</span>
 				</div>
-				<button
-					type="button"
+				<Button
 					onClick={handleCopy}
-					className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors shadow-md active:scale-95 transform"
+					className="flex items-center gap-2 px-4 py-2 active:scale-95 transform"
 				>
 					{copied ? (
 						<Check className="w-4 h-4" />
@@ -54,7 +50,7 @@ export function ResultPreview({ processedContent, error }: ResultPreviewProps) {
 						<Copy className="w-4 h-4" />
 					)}
 					{copied ? "Copied!" : "Copy to Clipboard"}
-				</button>
+				</Button>
 			</div>
 
 			<div className="mt-4">
@@ -66,6 +62,6 @@ export function ResultPreview({ processedContent, error }: ResultPreviewProps) {
 					{processedContent.split("\n").length > 20 && "\n..."}
 				</pre>
 			</div>
-		</div>
+		</Card>
 	);
 }
