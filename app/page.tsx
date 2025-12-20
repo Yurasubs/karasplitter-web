@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ResultPreview } from "@/components/ResultPreview";
 import { SplitOptions } from "@/components/SplitOptions";
 import { TextInput } from "@/components/TextInput";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import {
 	extractActorsAndStyles,
 	processAssFile,
@@ -43,12 +44,16 @@ export default function Home() {
 	};
 
 	return (
-		<main className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+		<main
+			className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans"
+			style={{ background: "var(--background)" }}
+		>
 			<div className="max-w-4xl mx-auto">
 				<div className="absolute top-4 left-4 flex items-center gap-4">
 					<Link
 						href="/how-to-use"
-						className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-gray-700 font-medium"
+						className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors font-medium"
+						style={{ color: "var(--foreground)" }}
 						aria-label="How to use"
 					>
 						<HelpCircle className="w-5 h-5" />
@@ -56,17 +61,22 @@ export default function Home() {
 					</Link>
 				</div>
 
-				<div className="absolute top-4 right-4 flex items-center gap-4">
+				<div className="absolute top-4 right-4 flex items-center gap-2">
+					<ThemeToggle />
 					<a
 						href="https://github.com/Aruh1/karasplitter-web"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="flex items-center gap-2 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors text-gray-700 font-medium"
+						className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors"
+						style={{ color: "var(--foreground)" }}
 						aria-label="GitHub Repository"
 					>
 						<Github className="w-5 h-5" />
 					</a>
-					<span className="text-gray-500 font-medium text-xs">
+					<span
+						className="font-medium text-xs"
+						style={{ color: "var(--muted)" }}
+					>
 						[{process.env.GIT_COMMIT_HASH || "development"}]
 					</span>
 				</div>
@@ -77,17 +87,26 @@ export default function Home() {
 							<Music className="w-8 h-8 text-white" />
 						</div>
 					</div>
-					<h1 className="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
+					<h1
+						className="text-4xl font-extrabold tracking-tight mb-2"
+						style={{ color: "var(--foreground)" }}
+					>
 						Karasplitter Web
 					</h1>
-					<p className="text-lg text-gray-600">
+					<p className="text-lg" style={{ color: "var(--muted)" }}>
 						Split your .ass karaoke lines with ease.
 					</p>
 				</div>
 
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 					<div className="lg:col-span-2 space-y-6">
-						<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+						<div
+							className="p-6 rounded-lg shadow-sm border"
+							style={{
+								background: "var(--card-bg)",
+								borderColor: "var(--card-border)",
+							}}
+						>
 							<TextInput
 								value={fileContent}
 								onChange={(val) => {

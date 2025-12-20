@@ -37,7 +37,13 @@ export function ResultPreview({ processedContent, error }: ResultPreviewProps) {
 	}
 
 	return (
-		<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 mt-6">
+		<div
+			className="p-6 rounded-lg shadow-sm border mt-6"
+			style={{
+				background: "var(--card-bg)",
+				borderColor: "var(--card-border)",
+			}}
+		>
 			<div className="flex items-center justify-between mb-4 flex-wrap gap-4">
 				<div className="flex items-center gap-2 text-green-600">
 					<FileCheck className="w-6 h-6" />
@@ -58,7 +64,10 @@ export function ResultPreview({ processedContent, error }: ResultPreviewProps) {
 			</div>
 
 			<div className="mt-4">
-				<h4 className="text-sm font-medium text-gray-500 mb-2">
+				<h4
+					className="text-sm font-medium mb-2"
+					style={{ color: "var(--muted)" }}
+				>
 					Preview (First 20 lines)
 				</h4>
 				<pre className="bg-gray-900 text-gray-100 p-4 rounded-md overflow-x-auto text-xs font-mono max-h-96 whitespace-pre-wrap break-all">

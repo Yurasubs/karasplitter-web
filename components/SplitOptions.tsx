@@ -29,9 +29,18 @@ export function SplitOptions({
 	const hasOptions = currentOptions.length > 0;
 
 	return (
-		<div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-6">
+		<div
+			className="p-6 rounded-lg shadow-sm border space-y-6"
+			style={{
+				background: "var(--card-bg)",
+				borderColor: "var(--card-border)",
+			}}
+		>
 			<div>
-				<h3 className="text-lg font-semibold mb-3 text-gray-800">
+				<h3
+					className="text-lg font-semibold mb-3"
+					style={{ color: "var(--foreground)" }}
+				>
 					Splitting Mode
 				</h3>
 				<div
@@ -40,7 +49,12 @@ export function SplitOptions({
 					{(["syl", "char", "word"] as SplitMode[]).map((m) => (
 						<label
 							key={m}
-							className="flex items-center gap-2 cursor-pointer bg-gray-50 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors border border-transparent hover:border-gray-200"
+							className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-md transition-colors border"
+							style={{
+								background: "var(--hover-bg)",
+								borderColor: "var(--card-border)",
+								color: "var(--foreground)",
+							}}
 						>
 							<input
 								type="radio"
@@ -48,9 +62,10 @@ export function SplitOptions({
 								value={m}
 								checked={mode === m}
 								onChange={() => setMode(m)}
-								className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+								className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+								style={{ borderColor: "var(--input-border)" }}
 							/>
-							<span className="capitalize text-gray-700">
+							<span className="capitalize">
 								{m === "syl"
 									? "Syllables (Romaji)"
 									: m === "char"
@@ -63,12 +78,23 @@ export function SplitOptions({
 			</div>
 
 			<div
-				className={`p-2 rounded-lg transition-colors ${cleanKTime ? "bg-blue-50 border-blue-200" : "bg-gray-50 border-gray-200"}`}
+				className="p-2 rounded-lg transition-colors"
+				style={{
+					background: cleanKTime
+						? "rgba(59, 130, 246, 0.1)"
+						: "var(--hover-bg)",
+					borderColor: cleanKTime
+						? "rgba(59, 130, 246, 0.3)"
+						: "var(--card-border)",
+				}}
 			>
 				<label className="flex items-center justify-between cursor-pointer group">
 					<div>
 						<span
-							className={`font-small block ${cleanKTime ? "text-blue-900" : "text-gray-700"}`}
+							className="font-small block"
+							style={{
+								color: cleanKTime ? "rgb(59, 130, 246)" : "var(--foreground)",
+							}}
 						>
 							Cleaner (De-ktime)
 						</span>
@@ -86,7 +112,10 @@ export function SplitOptions({
 			</div>
 
 			<div>
-				<h3 className="text-lg font-semibold mb-3 text-gray-800">
+				<h3
+					className="text-lg font-semibold mb-3"
+					style={{ color: "var(--foreground)" }}
+				>
 					Filter Lines
 				</h3>
 				<div className="flex flex-col gap-3">
@@ -94,7 +123,12 @@ export function SplitOptions({
 						{(["all", "actor", "style"] as const).map((s) => (
 							<label
 								key={s}
-								className="flex items-center gap-2 cursor-pointer bg-gray-50 px-3 py-2 rounded-md hover:bg-gray-100 transition-colors border border-transparent hover:border-gray-200"
+								className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-md transition-colors border"
+								style={{
+									background: "var(--hover-bg)",
+									borderColor: "var(--card-border)",
+									color: "var(--foreground)",
+								}}
 							>
 								<input
 									type="radio"
@@ -102,9 +136,10 @@ export function SplitOptions({
 									value={s}
 									checked={selector === s}
 									onChange={() => setSelector(s)}
-									className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+									className="w-4 h-4 text-blue-600 focus:ring-blue-500"
+									style={{ borderColor: "var(--input-border)" }}
 								/>
-								<span className="capitalize text-gray-700">{s}</span>
+								<span className="capitalize">{s}</span>
 							</label>
 						))}
 					</div>
@@ -114,7 +149,13 @@ export function SplitOptions({
 							<select
 								value={selectorValue}
 								onChange={(e) => setSelectorValue(e.target.value)}
-								className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all text-black bg-white cursor-pointer"
+								className="w-full px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all cursor-pointer"
+								style={{
+									background: "var(--input-bg)",
+									borderColor: "var(--input-border)",
+									color: "var(--foreground)",
+									border: "1px solid var(--input-border)",
+								}}
 							>
 								<option value="">Select {selector}...</option>
 								{currentOptions.map((option) => (
@@ -127,7 +168,7 @@ export function SplitOptions({
 					)}
 
 					{selector !== "all" && !hasOptions && (
-						<p className="text-sm text-gray-500 italic">
+						<p className="text-sm italic" style={{ color: "var(--muted)" }}>
 							No {selector}s found. Check your .ass content.
 						</p>
 					)}

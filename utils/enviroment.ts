@@ -8,12 +8,13 @@ export function getBaseUrl(): string[] {
 	}
 
 	const codespaceNameEnv = process.env.CODESPACE_NAME;
-	const codespaceNameFromGitConfig = process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN;
+	const codespaceNameFromGitConfig =
+		process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN;
 
 	if (codespaceNameEnv && codespaceNameFromGitConfig) {
 		return [
 			`http://localhost:${process.env.NEXT_PUBLIC_PORT || 3000}`,
-			`https://${codespaceNameEnv}-${process.env.NEXT_PUBLIC_PORT || 3000}.${codespaceNameFromGitConfig}`
+			`https://${codespaceNameEnv}-${process.env.NEXT_PUBLIC_PORT || 3000}.${codespaceNameFromGitConfig}`,
 		];
 	}
 
