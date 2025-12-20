@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
+import { getBaseUrl } from "@/utils/enviroment";
 
 export default function robots(): MetadataRoute.Robots {
-	const baseUrl = "https://ksplitter.kazeuta.com";
+	const baseUrl = getBaseUrl();
 
 	return {
 		rules: [
@@ -10,6 +11,6 @@ export default function robots(): MetadataRoute.Robots {
 				allow: "/",
 			},
 		],
-		sitemap: `${baseUrl}/sitemap.xml`,
+		sitemap: `${baseUrl[0]}/sitemap.xml`,
 	};
 }
