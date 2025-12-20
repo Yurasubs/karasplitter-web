@@ -29,18 +29,9 @@ export function SplitOptions({
 	const hasOptions = currentOptions.length > 0;
 
 	return (
-		<div
-			className="p-6 rounded-lg shadow-sm border space-y-6"
-			style={{
-				background: "var(--card-bg)",
-				borderColor: "var(--card-border)",
-			}}
-		>
+		<div className="p-6 rounded-lg shadow-sm border space-y-6 bg-card border-card">
 			<div>
-				<h3
-					className="text-lg font-semibold mb-3"
-					style={{ color: "var(--foreground)" }}
-				>
+				<h3 className="text-lg font-semibold mb-3 text-foreground">
 					Splitting Mode
 				</h3>
 				<div
@@ -49,12 +40,7 @@ export function SplitOptions({
 					{(["syl", "char", "word"] as SplitMode[]).map((m) => (
 						<label
 							key={m}
-							className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-md transition-colors border"
-							style={{
-								background: "var(--hover-bg)",
-								borderColor: "var(--card-border)",
-								color: "var(--foreground)",
-							}}
+							className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-md transition-colors border bg-hover border-card text-foreground"
 						>
 							<input
 								type="radio"
@@ -62,8 +48,7 @@ export function SplitOptions({
 								value={m}
 								checked={mode === m}
 								onChange={() => setMode(m)}
-								className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-								style={{ borderColor: "var(--input-border)" }}
+								className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-input"
 							/>
 							<span className="capitalize">
 								{m === "syl"
@@ -78,23 +63,12 @@ export function SplitOptions({
 			</div>
 
 			<div
-				className="p-2 rounded-lg transition-colors"
-				style={{
-					background: cleanKTime
-						? "rgba(59, 130, 246, 0.1)"
-						: "var(--hover-bg)",
-					borderColor: cleanKTime
-						? "rgba(59, 130, 246, 0.3)"
-						: "var(--card-border)",
-				}}
+				className={`p-2 rounded-lg transition-colors ${cleanKTime ? "bg-blue-500/10" : "bg-hover"}`}
 			>
 				<label className="flex items-center justify-between cursor-pointer group">
 					<div>
 						<span
-							className="font-small block"
-							style={{
-								color: cleanKTime ? "rgb(59, 130, 246)" : "var(--foreground)",
-							}}
+							className={`font-small block ${cleanKTime ? "text-blue-500" : "text-foreground"}`}
 						>
 							Cleaner (De-ktime)
 						</span>
@@ -106,16 +80,13 @@ export function SplitOptions({
 							onChange={(e) => setCleanKTime(e.target.checked)}
 							className="sr-only peer"
 						/>
-						<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+						<div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600" />
 					</div>
 				</label>
 			</div>
 
 			<div>
-				<h3
-					className="text-lg font-semibold mb-3"
-					style={{ color: "var(--foreground)" }}
-				>
+				<h3 className="text-lg font-semibold mb-3 text-foreground">
 					Filter Lines
 				</h3>
 				<div className="flex flex-col gap-3">
@@ -123,12 +94,7 @@ export function SplitOptions({
 						{(["all", "actor", "style"] as const).map((s) => (
 							<label
 								key={s}
-								className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-md transition-colors border"
-								style={{
-									background: "var(--hover-bg)",
-									borderColor: "var(--card-border)",
-									color: "var(--foreground)",
-								}}
+								className="flex items-center gap-2 cursor-pointer px-3 py-2 rounded-md transition-colors border bg-hover border-card text-foreground"
 							>
 								<input
 									type="radio"
@@ -136,8 +102,7 @@ export function SplitOptions({
 									value={s}
 									checked={selector === s}
 									onChange={() => setSelector(s)}
-									className="w-4 h-4 text-blue-600 focus:ring-blue-500"
-									style={{ borderColor: "var(--input-border)" }}
+									className="w-4 h-4 text-blue-600 focus:ring-blue-500 border-input"
 								/>
 								<span className="capitalize">{s}</span>
 							</label>
@@ -149,13 +114,7 @@ export function SplitOptions({
 							<select
 								value={selectorValue}
 								onChange={(e) => setSelectorValue(e.target.value)}
-								className="w-full px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all cursor-pointer"
-								style={{
-									background: "var(--input-bg)",
-									borderColor: "var(--input-border)",
-									color: "var(--foreground)",
-									border: "1px solid var(--input-border)",
-								}}
+								className="w-full px-4 py-2 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all cursor-pointer border bg-input border-input"
 							>
 								<option value="">Select {selector}...</option>
 								{currentOptions.map((option) => (
@@ -168,7 +127,7 @@ export function SplitOptions({
 					)}
 
 					{selector !== "all" && !hasOptions && (
-						<p className="text-sm italic" style={{ color: "var(--muted)" }}>
+						<p className="text-sm italic text-muted">
 							No {selector}s found. Check your .ass content.
 						</p>
 					)}

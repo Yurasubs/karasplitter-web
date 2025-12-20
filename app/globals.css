@@ -38,3 +38,56 @@ body {
 		background-color 0.2s ease,
 		color 0.2s ease;
 }
+
+/* Theme-aware utility classes */
+.text-foreground {
+	color: var(--foreground);
+}
+
+.text-muted {
+	color: var(--muted);
+}
+
+.bg-page {
+	background: var(--background);
+}
+
+.bg-card {
+	background: var(--card-bg);
+	border-color: var(--card-border);
+}
+
+.bg-input {
+	background: var(--input-bg);
+	border-color: var(--input-border);
+	color: var(--foreground);
+}
+
+.bg-hover {
+	background: var(--hover-bg);
+}
+
+.border-card {
+	border-color: var(--card-border);
+}
+
+.border-input {
+	border-color: var(--input-border);
+}
+
+/* Code styling */
+.code-inline {
+	color: var(--foreground);
+	background: var(--hover-bg);
+	padding: 0.125rem 0.25rem;
+	border-radius: 0.25rem;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+	color: var(--foreground);
+}
+
+.theme-toggle:hover {
+	background: var(--hover-bg);
+}
