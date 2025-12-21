@@ -1,9 +1,19 @@
+"use client";
+
 import type { SplitMode } from "@/lib/ksplitter";
-import type { SelectorType, RadioOption } from "@/lib/types";
-import { SPLIT_MODE_LABELS, inputClass } from "@/lib/constants";
-import { Card } from "@/components/ui/Card";
-import { RadioGroup } from "@/components/ui/RadioGroup";
-import { Toggle } from "@/components/ui/Toggle";
+import type { SelectorType } from "@/lib/types";
+import { SPLIT_MODE_LABELS } from "@/lib/constants";
+import { Card, CardContent } from "@/components/ui/card";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
 
 interface SplitOptionsProps {
 	mode: SplitMode;
@@ -18,17 +28,8 @@ interface SplitOptionsProps {
 	setCleanKTime: (enabled: boolean) => void;
 }
 
-const SPLIT_MODE_OPTIONS: RadioOption<SplitMode>[] = [
-	{ value: "syl", label: SPLIT_MODE_LABELS.syl },
-	{ value: "char", label: SPLIT_MODE_LABELS.char },
-	{ value: "word", label: SPLIT_MODE_LABELS.word },
-];
-
-const SELECTOR_OPTIONS: RadioOption<SelectorType>[] = [
-	{ value: "all", label: "All" },
-	{ value: "actor", label: "Actor" },
-	{ value: "style", label: "Style" },
-];
+const SPLIT_MODES: SplitMode[] = ["syl", "char", "word"];
+const SELECTOR_TYPES: SelectorType[] = ["all", "actor", "style"];
 
 export function SplitOptions({
 	mode,
@@ -46,62 +47,97 @@ export function SplitOptions({
 	const hasOptions = currentOptions.length > 0;
 
 	return (
-		<Card className="space-y-6">
-			<div>
-				<h3 className="text-lg font-semibold mb-3 text-foreground">
-					Splitting Mode
-				</h3>
-				<RadioGroup
-					name="mode"
-					options={SPLIT_MODE_OPTIONS}
-					value={mode}
-					onChange={setMode}
-					disabled={cleanKTime}
-				/>
-			</div>
-
-			<Toggle
-				label="Cleaner (De-ktime)"
-				checked={cleanKTime}
-				onChange={setCleanKTime}
-			/>
-
-			<div>
-				<h3 className="text-lg font-semibold mb-3 text-foreground">
-					Filter Lines
-				</h3>
-				<div className="flex flex-col gap-3">
+		<Card>
+			<CardContent className="pt-6 space-y-6">
+				<div>
+					<h3 className="text-lg font-semibold mb-3 text-[hsl(var(--foreground))]">
+						Splitting Mode
+					</h3>
 					<RadioGroup
-						name="selector"
-						options={SELECTOR_OPTIONS}
-						value={selector}
-						onChange={setSelector}
-					/>
-
-					{selector !== "all" && hasOptions && (
-						<div>
-							<select
-								value={selectorValue}
-								onChange={(e) => setSelectorValue(e.target.value)}
-								className={`${inputClass} cursor-pointer`}
+						value={mode}
+						onValueChange={(val) => setMode(val as SplitMode)}
+						disabled={cleanKTime}
+						className="flex flex-wrap gap-3"
+					>
+						{SPLIT_MODES.map((m) => (
+							<div
+								key={m}
+								className="flex items-center space-x-2 px-3 py-2 rounded-md border border-[hsl(var(--border))] bg-[hsl(var(--accent))]"
 							>
-								<option value="">Select {selector}...</option>
-								{currentOptions.map((option) => (
-									<option key={option} value={option}>
-										{option}
-									</option>
-								))}
-							</select>
-						</div>
-					)}
-
-					{selector !== "all" && !hasOptions && (
-						<p className="text-sm italic text-muted">
-							No {selector}s found. Check your .ass content.
-						</p>
-					)}
+								<RadioGroupItem value={m} id={`mode-${m}`} />
+								<Label htmlFor={`mode-${m}`} className="cursor-pointer">
+									{SPLIT_MODE_LABELS[m]}
+								</Label>
+							</div>
+						))}
+					</RadioGroup>
 				</div>
-			</div>
+
+				<div
+					className={`flex items-center justify-between p-3 rounded-lg transition-colors ${cleanKTime ? "bg-[hsl(var(--primary))]/10" : "bg-[hsl(var(--accent))]"}`}
+				>
+					<Label
+						htmlFor="clean-ktime"
+						className={`cursor-pointer ${cleanKTime ? "text-[hsl(var(--primary))]" : "text-[hsl(var(--foreground))]"}`}
+					>
+						Cleaner (De-ktime)
+					</Label>
+					<Switch
+						id="clean-ktime"
+						checked={cleanKTime}
+						onCheckedChange={setCleanKTime}
+					/>
+				</div>
+
+				<div>
+					<h3 className="text-lg font-semibold mb-3 text-[hsl(var(--foreground))]">
+						Filter Lines
+					</h3>
+					<div className="flex flex-col gap-3">
+						<RadioGroup
+							value={selector}
+							onValueChange={(val) => setSelector(val as SelectorType)}
+							className="flex flex-wrap gap-3"
+						>
+							{SELECTOR_TYPES.map((s) => (
+								<div
+									key={s}
+									className="flex items-center space-x-2 px-3 py-2 rounded-md border border-[hsl(var(--border))] bg-[hsl(var(--accent))]"
+								>
+									<RadioGroupItem value={s} id={`selector-${s}`} />
+									<Label
+										htmlFor={`selector-${s}`}
+										className="cursor-pointer capitalize"
+									>
+										{s}
+									</Label>
+								</div>
+							))}
+						</RadioGroup>
+
+						{selector !== "all" && hasOptions && (
+							<Select value={selectorValue} onValueChange={setSelectorValue}>
+								<SelectTrigger>
+									<SelectValue placeholder={`Select ${selector}...`} />
+								</SelectTrigger>
+								<SelectContent>
+									{currentOptions.map((option) => (
+										<SelectItem key={option} value={option}>
+											{option}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						)}
+
+						{selector !== "all" && !hasOptions && (
+							<p className="text-sm italic text-[hsl(var(--muted-foreground))]">
+								No {selector}s found. Check your .ass content.
+							</p>
+						)}
+					</div>
+				</div>
+			</CardContent>
 		</Card>
 	);
 }

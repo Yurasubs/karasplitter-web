@@ -1,28 +1,5 @@
 @import "tailwindcss";
 
-:root {
-	--background: #ffffff;
-	--foreground: #171717;
-	--card-bg: #ffffff;
-	--card-border: #e5e7eb;
-	--muted: #6b7280;
-	--input-bg: #ffffff;
-	--input-border: #d1d5db;
-	--hover-bg: #f3f4f6;
-}
-
-/* Dark mode using data-theme attribute */
-:root[data-theme="dark"] {
-	--background: #0a0a0a;
-	--foreground: #ededed;
-	--card-bg: #1a1a1a;
-	--card-border: #2d2d2d;
-	--muted: #9ca3af;
-	--input-bg: #1a1a1a;
-	--input-border: #3d3d3d;
-	--hover-bg: #2d2d2d;
-}
-
 @theme inline {
 	--color-background: var(--background);
 	--color-foreground: var(--foreground);
@@ -30,64 +7,109 @@
 	--font-mono: var(--font-geist-mono);
 }
 
+:root {
+	--background: 0 0% 100%;
+	--foreground: 0 0% 3.9%;
+	--card: 0 0% 100%;
+	--card-foreground: 0 0% 3.9%;
+	--popover: 0 0% 100%;
+	--popover-foreground: 0 0% 3.9%;
+	--primary: 221.2 83.2% 53.3%;
+	--primary-foreground: 210 40% 98%;
+	--secondary: 210 40% 96%;
+	--secondary-foreground: 222.2 84% 4.9%;
+	--muted: 210 40% 96%;
+	--muted-foreground: 215.4 16.3% 46.9%;
+	--accent: 210 40% 96%;
+	--accent-foreground: 222.2 84% 4.9%;
+	--destructive: 0 84.2% 60.2%;
+	--destructive-foreground: 210 40% 98%;
+	--border: 214.3 31.8% 91.4%;
+	--input: 214.3 31.8% 91.4%;
+	--ring: 221.2 83.2% 53.3%;
+	--radius: 0.5rem;
+}
+
+:root[data-theme="dark"] {
+	--background: 0 0% 3.9%;
+	--foreground: 0 0% 98%;
+	--card: 0 0% 7%;
+	--card-foreground: 0 0% 98%;
+	--popover: 0 0% 7%;
+	--popover-foreground: 0 0% 98%;
+	--primary: 217.2 91.2% 59.8%;
+	--primary-foreground: 222.2 84% 4.9%;
+	--secondary: 0 0% 14.9%;
+	--secondary-foreground: 0 0% 98%;
+	--muted: 0 0% 14.9%;
+	--muted-foreground: 0 0% 63.9%;
+	--accent: 0 0% 14.9%;
+	--accent-foreground: 0 0% 98%;
+	--destructive: 0 62.8% 30.6%;
+	--destructive-foreground: 0 0% 98%;
+	--border: 0 0% 18%;
+	--input: 0 0% 18%;
+	--ring: 217.2 91.2% 59.8%;
+}
+
 body {
-	background: var(--background);
-	color: var(--foreground);
+	background: hsl(var(--background));
+	color: hsl(var(--foreground));
 	font-family: Arial, Helvetica, sans-serif;
 	transition:
 		background-color 0.2s ease,
 		color 0.2s ease;
 }
 
-/* Theme-aware utility classes */
+/* Theme-aware utility classes for legacy support */
 .text-foreground {
-	color: var(--foreground);
+	color: hsl(var(--foreground));
 }
 
 .text-muted {
-	color: var(--muted);
+	color: hsl(var(--muted-foreground));
 }
 
 .bg-page {
-	background: var(--background);
+	background: hsl(var(--background));
 }
 
 .bg-card {
-	background: var(--card-bg);
-	border-color: var(--card-border);
+	background: hsl(var(--card));
+	border-color: hsl(var(--border));
 }
 
 .bg-input {
-	background: var(--input-bg);
-	border-color: var(--input-border);
-	color: var(--foreground);
+	background: hsl(var(--card));
+	border-color: hsl(var(--input));
+	color: hsl(var(--foreground));
 }
 
 .bg-hover {
-	background: var(--hover-bg);
+	background: hsl(var(--accent));
 }
 
 .border-card {
-	border-color: var(--card-border);
+	border-color: hsl(var(--border));
 }
 
 .border-input {
-	border-color: var(--input-border);
+	border-color: hsl(var(--input));
 }
 
 /* Code styling */
 .code-inline {
-	color: var(--foreground);
-	background: var(--hover-bg);
+	color: hsl(var(--foreground));
+	background: hsl(var(--accent));
 	padding: 0.125rem 0.25rem;
 	border-radius: 0.25rem;
 }
 
 /* Theme toggle button */
 .theme-toggle {
-	color: var(--foreground);
+	color: hsl(var(--foreground));
 }
 
 .theme-toggle:hover {
-	background: var(--hover-bg);
+	background: hsl(var(--accent));
 }

@@ -7,8 +7,8 @@ import { ResultPreview } from "@/components/ResultPreview";
 import { SplitOptions } from "@/components/SplitOptions";
 import { TextInput } from "@/components/TextInput";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import {
 	extractActorsAndStyles,
 	processAssFile,
@@ -52,45 +52,48 @@ export default function Home() {
 	};
 
 	return (
-		<main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans bg-page">
+		<main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans bg-[hsl(var(--background))]">
 			<div className="max-w-4xl mx-auto">
 				<div className="absolute top-4 left-4 flex items-center gap-4">
-					<Link
-						href="/how-to-use"
-						className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors font-medium text-foreground"
-						aria-label="How to use"
-					>
-						<HelpCircle className="w-5 h-5" />
-						<span className="hidden sm:inline">How to use</span>
-					</Link>
+					<Button variant="ghost" asChild>
+						<Link
+							href="/how-to-use"
+							className="flex items-center gap-2"
+							aria-label="How to use"
+						>
+							<HelpCircle className="w-5 h-5" />
+							<span className="hidden sm:inline">How to use</span>
+						</Link>
+					</Button>
 				</div>
 
 				<div className="absolute top-4 right-4 flex items-center gap-2">
 					<ThemeToggle />
-					<Link
-						href="https://github.com/Aruh1/karasplitter-web"
-						target="_blank"
-						rel="noopener noreferrer"
-						className="flex items-center gap-2 px-3 py-2 rounded-md transition-colors text-foreground"
-						aria-label="GitHub Repository"
-					>
-						<Github className="w-5 h-5" />
-					</Link>
-					<span className="font-medium text-xs text-muted">
+					<Button variant="ghost" size="icon" asChild>
+						<Link
+							href="https://github.com/Aruh1/karasplitter-web"
+							target="_blank"
+							rel="noopener noreferrer"
+							aria-label="GitHub Repository"
+						>
+							<Github className="w-5 h-5" />
+						</Link>
+					</Button>
+					<span className="font-medium text-xs text-[hsl(var(--muted-foreground))]">
 						[{process.env.GIT_COMMIT_HASH || "development"}]
 					</span>
 				</div>
 
 				<div className="text-center mb-10">
 					<div className="flex justify-center mb-4">
-						<div className="p-3 bg-blue-600 rounded-full shadow-lg">
+						<div className="p-3 bg-[hsl(var(--primary))] rounded-full shadow-lg">
 							<Music className="w-8 h-8 text-white" />
 						</div>
 					</div>
-					<h1 className="text-4xl font-extrabold tracking-tight mb-2 text-foreground">
+					<h1 className="text-4xl font-extrabold tracking-tight mb-2 text-[hsl(var(--foreground))]">
 						Karasplitter Web
 					</h1>
-					<p className="text-lg text-muted">
+					<p className="text-lg text-[hsl(var(--muted-foreground))]">
 						Split your .ass karaoke lines with ease.
 					</p>
 				</div>
@@ -98,7 +101,9 @@ export default function Home() {
 				<div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
 					<div className="lg:col-span-2 space-y-6">
 						<Card>
-							<TextInput value={fileContent} onChange={handleContentChange} />
+							<CardContent className="pt-6">
+								<TextInput value={fileContent} onChange={handleContentChange} />
+							</CardContent>
 						</Card>
 						{(processedContent || error) && (
 							<ResultPreview
@@ -125,7 +130,8 @@ export default function Home() {
 						<Button
 							onClick={handleProcess}
 							disabled={!fileContent.trim()}
-							className="w-full py-3 px-4 text-lg"
+							className="w-full py-3 px-4 text-lg h-auto"
+							size="lg"
 						>
 							Process Content
 						</Button>
