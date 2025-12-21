@@ -67,7 +67,7 @@ export default function Home() {
 
 				<div className="absolute top-4 right-4 flex items-center gap-2">
 					<ThemeToggle />
-					<a
+					<Link
 						href="https://github.com/Aruh1/karasplitter-web"
 						target="_blank"
 						rel="noopener noreferrer"
@@ -75,7 +75,7 @@ export default function Home() {
 						aria-label="GitHub Repository"
 					>
 						<Github className="w-5 h-5" />
-					</a>
+					</Link>
 					<span className="font-medium text-xs text-muted">
 						[{process.env.GIT_COMMIT_HASH || "development"}]
 					</span>
