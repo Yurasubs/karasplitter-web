@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useSyncExternalStore } from "react";
 import type { Theme } from "@/lib/types";
 
 interface UseThemeReturn {
@@ -9,32 +9,61 @@ interface UseThemeReturn {
 	mounted: boolean;
 }
 
-export function useTheme(): UseThemeReturn {
-	const [theme, setTheme] = useState<Theme>("light");
-	const [mounted, setMounted] = useState(false);
+// Store for theme state
+let currentTheme: Theme = "light";
+const listeners = new Set<() => void>();
 
-	useEffect(() => {
-		setMounted(true);
+function subscribe(callback: () => void) {
+	listeners.add(callback);
+	return () => listeners.delete(callback);
+}
+
+function getSnapshot(): Theme {
+	return currentTheme;
+}
+
+function getServerSnapshot(): Theme {
+	return "light";
+}
+
+function setTheme(newTheme: Theme) {
+	currentTheme = newTheme;
+	localStorage.setItem("theme", newTheme);
+	document.documentElement.setAttribute("data-theme", newTheme);
+	// Notify all subscribers
+	for (const listener of listeners) {
+		listener();
+	}
+}
+
+export function useTheme(): UseThemeReturn {
+	const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+
+	// Initialize theme from localStorage on mount
+	useLayoutEffect(() => {
 		const savedTheme = localStorage.getItem("theme") as Theme | null;
 		if (savedTheme) {
-			setTheme(savedTheme);
-			document.documentElement.setAttribute("data-theme", savedTheme);
+			currentTheme = savedTheme;
 		} else {
 			const prefersDark = window.matchMedia(
 				"(prefers-color-scheme: dark)",
 			).matches;
-			const initialTheme = prefersDark ? "dark" : "light";
-			setTheme(initialTheme);
-			document.documentElement.setAttribute("data-theme", initialTheme);
+			currentTheme = prefersDark ? "dark" : "light";
+		}
+		document.documentElement.setAttribute("data-theme", currentTheme);
+		// Trigger re-render with correct theme
+		for (const listener of listeners) {
+			listener();
 		}
 	}, []);
 
-	const toggleTheme = () => {
-		const newTheme = theme === "light" ? "dark" : "light";
+	const toggleTheme = useCallback(() => {
+		const newTheme = currentTheme === "light" ? "dark" : "light";
 		setTheme(newTheme);
-		localStorage.setItem("theme", newTheme);
-		document.documentElement.setAttribute("data-theme", newTheme);
-	};
+	}, []);
+
+	// mounted is true on client, false during SSR
+	const mounted = typeof window !== "undefined";
 
 	return { theme, toggleTheme, mounted };
 }

@@ -125,7 +125,7 @@ export default function HowToUse() {
 										</strong>{" "}
 										from your pasted content. You can use the dropdowns to
 										filter which lines to process (e.g., only lines with the
-										"Default" style or specific actor).
+										&quot;Default&quot; style or specific actor).
 									</p>
 								</StepItem>
 
@@ -147,7 +147,7 @@ export default function HowToUse() {
 												Syllables (syl)
 											</strong>
 											: Smarter splitting based on Japanese romaji rules (e.g.,
-											"ka", "shi", "tsu").
+											&quot;ka&quot;, &quot;shi&quot;, &quot;tsu&quot;).
 										</li>
 										<li>
 											<strong className="text-[hsl(var(--foreground))]">
