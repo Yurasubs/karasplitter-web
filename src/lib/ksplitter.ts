@@ -12,11 +12,22 @@ const PUNCTUATION_CHARS_WITH_BRACE = new Set([
 	"}",
 ]);
 const VOWELS = new Set(["a", "e", "i", "o", "u"]);
-const VOWELS_WITH_MACRON = new Set(["a", "e", "i", "o", "u", "ō"]);
+const VOWELS_WITH_MACRON = new Set([
+	"a",
+	"e",
+	"i",
+	"o",
+	"u",
+	"ā",
+	"ī",
+	"ū",
+	"ē",
+	"ō",
+]);
 const CONSONANTS_WITH_VOWEL = new Set(["r", "y", "m", "n", "h", "k"]);
-const W_VOWELS = new Set(["a", "o", "ō"]);
-const T_VOWELS = new Set(["a", "e", "o", "ō"]);
-const S_VOWELS = new Set(["a", "u", "e", "o", "ō"]);
+const W_VOWELS = new Set(["a", "o", "ā", "ō"]);
+const T_VOWELS = new Set(["a", "e", "o", "ā", "ē", "ō"]);
+const S_VOWELS = new Set(["a", "u", "e", "o", "ā", "ū", "ē", "ō"]);
 const KTIME_REGEX = /\{\\[kK][fo]?\d*\}/g;
 
 export function deKtime(text: string): string {
