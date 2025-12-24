@@ -6,6 +6,7 @@ import {
 	k_array_syl,
 	processAssFile,
 	arrTOk_str,
+	arrTOk_str_fixed,
 	extractActorsAndStyles,
 } from "./ksplitter";
 
@@ -297,6 +298,114 @@ describe("ksplitter", () => {
 			expect(result.content).toBe(
 				"Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,Hello World",
 			);
+		});
+	});
+
+	describe("arrTOk_str_fixed", () => {
+		it("should generate fixed {\\k1} timing for each element", () => {
+			const syllables = ["ka", "ra", "o", "ke"];
+			const result = arrTOk_str_fixed(syllables);
+			expect(result).toBe("{\\k1}ka{\\k1}ra{\\k1}o{\\k1}ke");
+		});
+
+		it("should handle empty array", () => {
+			const result = arrTOk_str_fixed([]);
+			expect(result).toBe("");
+		});
+
+		it("should handle single element", () => {
+			const result = arrTOk_str_fixed(["hello"]);
+			expect(result).toBe("{\\k1}hello");
+		});
+
+		it("should handle words with spaces", () => {
+			const words = ["hello ", "world "];
+			const result = arrTOk_str_fixed(words);
+			expect(result).toBe("{\\k1}hello {\\k1}world ");
+		});
+
+		it("should handle characters", () => {
+			const chars = ["a", "b ", "c!"];
+			const result = arrTOk_str_fixed(chars);
+			expect(result).toBe("{\\k1}a{\\k1}b {\\k1}c!");
+		});
+	});
+
+	describe("kTimeOption mode", () => {
+		it("should use fixed {\\k1} for char mode when kTimeOption is k1", () => {
+			const input =
+				"Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,abc";
+			const result = processAssFile(input, {
+				mode: "char",
+				selector: "all",
+				kTimeOption: "k1",
+			});
+
+			expect(result.error).toBeNull();
+			expect(result.content).toBe(
+				"Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,{\\k1}a{\\k1}b{\\k1}c",
+			);
+		});
+
+		it("should use fixed {\\k1} for word mode when kTimeOption is k1", () => {
+			const input =
+				"Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,hello world";
+			const result = processAssFile(input, {
+				mode: "word",
+				selector: "all",
+				kTimeOption: "k1",
+			});
+
+			expect(result.error).toBeNull();
+			expect(result.content).toBe(
+				"Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,{\\k1}hello {\\k1}world ",
+			);
+		});
+
+		it("should use calculated timing for char mode when kTimeOption is calculated", () => {
+			const input =
+				"Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,abc";
+			const result = processAssFile(input, {
+				mode: "char",
+				selector: "all",
+				kTimeOption: "calculated",
+			});
+
+			expect(result.error).toBeNull();
+			// Should use calculated timing, not fixed {\\k1}
+			expect(result.content).toContain("{\\k");
+			expect(result.content).not.toBe(
+				"Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,{\\k1}a{\\k1}b{\\k1}c",
+			);
+		});
+
+		it("should ignore kTimeOption for syl mode (default behavior)", () => {
+			const input =
+				"Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,karaoke";
+			const result = processAssFile(input, {
+				mode: "syl",
+				selector: "all",
+				kTimeOption: "k1",
+			});
+
+			expect(result.error).toBeNull();
+			// For syllable mode, kTimeOption should be ignored, using calculated timing
+			expect(result.content).toContain("{\\k");
+			// Verify it's not just {\\k1} everywhere
+			expect(result.content).not.toMatch(/\{\\k1\}ka\{\\k1\}ra/);
+		});
+
+		it("should default to calculated timing when kTimeOption is not specified", () => {
+			const input =
+				"Dialogue: 0,0:00:00.00,0:00:05.00,Default,Singer1,0,0,0,,abc";
+			const result = processAssFile(input, {
+				mode: "char",
+				selector: "all",
+			});
+
+			expect(result.error).toBeNull();
+			// Should use calculated (default), not fixed {\\k1}
+			expect(result.content).toContain("{\\k");
 		});
 	});
 });

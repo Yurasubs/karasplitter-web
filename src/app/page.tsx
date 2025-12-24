@@ -14,7 +14,7 @@ import {
 	processAssFile,
 	type SplitMode,
 } from "@/lib/ksplitter";
-import type { SelectorType } from "@/lib/types";
+import type { SelectorType, KTimeOption } from "@/lib/types";
 
 export default function Home() {
 	const [fileContent, setFileContent] = useState<string>("");
@@ -23,6 +23,7 @@ export default function Home() {
 	const [selectorValue, setSelectorValue] = useState<string>("");
 	const [processedContent, setProcessedContent] = useState<string | null>(null);
 	const [cleanKTime, setCleanKTime] = useState<boolean>(false);
+	const [kTimeOption, setKTimeOption] = useState<KTimeOption>("calculated");
 	const [error, setError] = useState<string | null>(null);
 
 	const metadata = useMemo(() => {
@@ -39,6 +40,7 @@ export default function Home() {
 			selector,
 			selectorValue,
 			cleanKTime,
+			kTimeOption,
 		});
 		setProcessedContent(result.content);
 		setError(result.error);
@@ -125,6 +127,8 @@ export default function Home() {
 							styleOptions={metadata.styles}
 							cleanKTime={cleanKTime}
 							setCleanKTime={setCleanKTime}
+							kTimeOption={kTimeOption}
+							setKTimeOption={setKTimeOption}
 						/>
 
 						<Button

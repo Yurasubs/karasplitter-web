@@ -217,11 +217,23 @@ export function arrTOk_str(
 	return result;
 }
 
+export function arrTOk_str_fixed(karaSplit_array: string[]): string {
+	const len = karaSplit_array.length;
+	if (len === 0) return "";
+
+	let result = "";
+	for (let i = 0; i < len; i++) {
+		result += `{\\k1}${karaSplit_array[i]}`;
+	}
+	return result;
+}
+
 export interface ProcessOptions {
 	selector: "all" | "actor" | "style";
 	selectorValue?: string;
 	mode: SplitMode;
 	cleanKTime?: boolean;
+	kTimeOption?: "calculated" | "k1";
 }
 
 export function processAssFile(
@@ -269,14 +281,22 @@ export function processAssFile(
 					if (cleanMode) {
 						outputLines.push(prefix + deKtime(karaRawText));
 					} else {
-						const duration = aegiTimeTOds(parts[2]) - aegiTimeTOds(parts[1]);
-						const textLen = karaRawText.length;
-						if (textLen > 0) {
-							const timePerletter = Math.floor(duration / textLen);
-							const split = str_TOkara_array(karaRawText, options.mode);
-							outputLines.push(prefix + arrTOk_str(split, timePerletter));
+						const split = str_TOkara_array(karaRawText, options.mode);
+						// Use fixed {\k1} for char/word modes when kTimeOption is 'k1'
+						if (
+							(options.mode === "char" || options.mode === "word") &&
+							options.kTimeOption === "k1"
+						) {
+							outputLines.push(prefix + arrTOk_str_fixed(split));
 						} else {
-							outputLines.push(input);
+							const duration = aegiTimeTOds(parts[2]) - aegiTimeTOds(parts[1]);
+							const textLen = karaRawText.length;
+							if (textLen > 0) {
+								const timePerletter = Math.floor(duration / textLen);
+								outputLines.push(prefix + arrTOk_str(split, timePerletter));
+							} else {
+								outputLines.push(input);
+							}
 						}
 					}
 				} else {

@@ -1,8 +1,8 @@
 "use client";
 
 import type { SplitMode } from "@/lib/ksplitter";
-import type { SelectorType } from "@/lib/types";
-import { SPLIT_MODE_LABELS } from "@/lib/constants";
+import type { SelectorType, KTimeOption } from "@/lib/types";
+import { SPLIT_MODE_LABELS, K_TIME_OPTION_LABELS } from "@/lib/constants";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
@@ -26,10 +26,13 @@ interface SplitOptionsProps {
 	styleOptions: string[];
 	cleanKTime: boolean;
 	setCleanKTime: (enabled: boolean) => void;
+	kTimeOption: KTimeOption;
+	setKTimeOption: (option: KTimeOption) => void;
 }
 
 const SPLIT_MODES: SplitMode[] = ["syl", "char", "word"];
 const SELECTOR_TYPES: SelectorType[] = ["all", "actor", "style"];
+const K_TIME_OPTIONS: KTimeOption[] = ["calculated", "k1"];
 
 export function SplitOptions({
 	mode,
@@ -42,9 +45,12 @@ export function SplitOptions({
 	styleOptions,
 	cleanKTime,
 	setCleanKTime,
+	kTimeOption,
+	setKTimeOption,
 }: SplitOptionsProps) {
 	const currentOptions = selector === "actor" ? actorOptions : styleOptions;
 	const hasOptions = currentOptions.length > 0;
+	const showKTimeOption = (mode === "char" || mode === "word") && !cleanKTime;
 
 	return (
 		<Card>
@@ -71,6 +77,29 @@ export function SplitOptions({
 							</div>
 						))}
 					</RadioGroup>
+
+					{showKTimeOption && (
+						<div className="mt-3">
+							<Label className="text-sm text-[hsl(var(--muted-foreground))] mb-2 block">
+								Timing Option
+							</Label>
+							<Select
+								value={kTimeOption}
+								onValueChange={(val) => setKTimeOption(val as KTimeOption)}
+							>
+								<SelectTrigger className="w-full">
+									<SelectValue placeholder="Select timing option..." />
+								</SelectTrigger>
+								<SelectContent>
+									{K_TIME_OPTIONS.map((option) => (
+										<SelectItem key={option} value={option}>
+											{K_TIME_OPTION_LABELS[option]}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+					)}
 				</div>
 
 				<div
