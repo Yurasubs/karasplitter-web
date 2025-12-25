@@ -1,6 +1,11 @@
 "use client";
 
-import { useCallback, useLayoutEffect, useSyncExternalStore } from "react";
+import {
+	useCallback,
+	useLayoutEffect,
+	useState,
+	useSyncExternalStore,
+} from "react";
 import type { Theme } from "@/lib/types";
 
 interface UseThemeReturn {
@@ -38,9 +43,11 @@ function setTheme(newTheme: Theme) {
 
 export function useTheme(): UseThemeReturn {
 	const theme = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+	const [mounted, setMounted] = useState(false);
 
 	// Initialize theme from localStorage on mount
 	useLayoutEffect(() => {
+		setMounted(true);
 		const savedTheme = localStorage.getItem("theme") as Theme | null;
 		if (savedTheme) {
 			currentTheme = savedTheme;
@@ -61,9 +68,6 @@ export function useTheme(): UseThemeReturn {
 		const newTheme = currentTheme === "light" ? "dark" : "light";
 		setTheme(newTheme);
 	}, []);
-
-	// mounted is true on client, false during SSR
-	const mounted = typeof window !== "undefined";
 
 	return { theme, toggleTheme, mounted };
 }

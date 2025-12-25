@@ -30,7 +30,10 @@ function StepItem({ number, title, children }: StepItemProps) {
 
 export default function HowToUse() {
 	return (
-		<main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans bg-[hsl(var(--background))]">
+		<main
+			id="main-content"
+			className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 font-sans bg-[hsl(var(--background))]"
+		>
 			<div className="max-w-3xl mx-auto">
 				{/* Theme Toggle */}
 				<div className="absolute top-4 right-4">

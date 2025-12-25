@@ -56,9 +56,9 @@ export function SplitOptions({
 		<Card>
 			<CardContent className="pt-6 space-y-6">
 				<div>
-					<h3 className="text-lg font-semibold mb-3 text-[hsl(var(--foreground))]">
+					<h2 className="text-lg font-semibold mb-3 text-[hsl(var(--foreground))]">
 						Splitting Mode
-					</h3>
+					</h2>
 					<RadioGroup
 						value={mode}
 						onValueChange={(val) => setMode(val as SplitMode)}
@@ -70,7 +70,11 @@ export function SplitOptions({
 								key={m}
 								className="flex items-center space-x-2 px-3 py-2 rounded-md border border-[hsl(var(--border))] bg-[hsl(var(--accent))]"
 							>
-								<RadioGroupItem value={m} id={`mode-${m}`} />
+								<RadioGroupItem
+									value={m}
+									id={`mode-${m}`}
+									aria-label={SPLIT_MODE_LABELS[m]}
+								/>
 								<Label htmlFor={`mode-${m}`} className="cursor-pointer">
 									{SPLIT_MODE_LABELS[m]}
 								</Label>
@@ -115,13 +119,14 @@ export function SplitOptions({
 						id="clean-ktime"
 						checked={cleanKTime}
 						onCheckedChange={setCleanKTime}
+						aria-label="Toggle cleaner mode (De-ktime)"
 					/>
 				</div>
 
 				<div>
-					<h3 className="text-lg font-semibold mb-3 text-[hsl(var(--foreground))]">
+					<h2 className="text-lg font-semibold mb-3 text-[hsl(var(--foreground))]">
 						Filter Lines
-					</h3>
+					</h2>
 					<div className="flex flex-col gap-3">
 						<RadioGroup
 							value={selector}
@@ -133,7 +138,11 @@ export function SplitOptions({
 									key={s}
 									className="flex items-center space-x-2 px-3 py-2 rounded-md border border-[hsl(var(--border))] bg-[hsl(var(--accent))]"
 								>
-									<RadioGroupItem value={s} id={`selector-${s}`} />
+									<RadioGroupItem
+										value={s}
+										id={`selector-${s}`}
+										aria-label={`Filter by ${s}`}
+									/>
 									<Label
 										htmlFor={`selector-${s}`}
 										className="cursor-pointer capitalize"
