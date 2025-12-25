@@ -3,8 +3,8 @@
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
-		"dev": "bun run lint && vitest run && next dev",
-		"build": "bun run lint && vitest run && next build",
+		"dev": "bun run format && vitest run && next dev",
+		"build": "bun run format && vitest run && next build",
 		"start": "next start",
 		"lint": "eslint src",
 		"lint:fix": "eslint src --fix",
