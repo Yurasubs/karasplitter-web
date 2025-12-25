@@ -23,7 +23,7 @@ jobs:
         run: bun install --frozen-lockfile
 
       - name: Check formatting (Biome)
-        run: bun run biome format --check .
+        run: bun run format
 
       - name: Lint (ESLint)
         run: bun run lint
