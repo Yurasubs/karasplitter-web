@@ -68,42 +68,57 @@ export function SplitOptions({
 						{SPLIT_MODES.map((m) => (
 							<div
 								key={m}
-								className="flex items-center space-x-2 px-3 py-2 rounded-md border border-[hsl(var(--border))] bg-[hsl(var(--accent))]"
+								className={`flex items-center space-x-2 px-3 py-2 rounded-md border border-[hsl(var(--border))] bg-[hsl(var(--accent))] transition-opacity ${
+									cleanKTime ? "opacity-50 cursor-not-allowed" : ""
+								}`}
 							>
 								<RadioGroupItem
 									value={m}
 									id={`mode-${m}`}
 									aria-label={SPLIT_MODE_LABELS[m]}
 								/>
-								<Label htmlFor={`mode-${m}`} className="cursor-pointer">
+								<Label
+									htmlFor={`mode-${m}`}
+									className={
+										cleanKTime ? "cursor-not-allowed" : "cursor-pointer"
+									}
+								>
 									{SPLIT_MODE_LABELS[m]}
 								</Label>
 							</div>
 						))}
 					</RadioGroup>
 
-					{showKTimeOption && (
-						<div className="mt-3">
-							<Label className="text-sm text-[hsl(var(--muted-foreground))] mb-2 block">
-								Timing Option
-							</Label>
-							<Select
-								value={kTimeOption}
-								onValueChange={(val) => setKTimeOption(val as KTimeOption)}
-							>
-								<SelectTrigger className="w-full">
-									<SelectValue placeholder="Select timing option..." />
-								</SelectTrigger>
-								<SelectContent>
-									{K_TIME_OPTIONS.map((option) => (
-										<SelectItem key={option} value={option}>
-											{K_TIME_OPTION_LABELS[option]}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
+					<div
+						className={`grid transition-all duration-300 ease-out ${
+							showKTimeOption
+								? "grid-rows-[1fr] opacity-100"
+								: "grid-rows-[0fr] opacity-0"
+						}`}
+					>
+						<div className="overflow-hidden">
+							<div className="mt-3">
+								<Label className="text-sm text-[hsl(var(--muted-foreground))] mb-2 block">
+									Timing Option
+								</Label>
+								<Select
+									value={kTimeOption}
+									onValueChange={(val) => setKTimeOption(val as KTimeOption)}
+								>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="Select timing option..." />
+									</SelectTrigger>
+									<SelectContent>
+										{K_TIME_OPTIONS.map((option) => (
+											<SelectItem key={option} value={option}>
+												{K_TIME_OPTION_LABELS[option]}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+							</div>
 						</div>
-					)}
+					</div>
 				</div>
 
 				<div
@@ -153,20 +168,33 @@ export function SplitOptions({
 							))}
 						</RadioGroup>
 
-						{selector !== "all" && hasOptions && (
-							<Select value={selectorValue} onValueChange={setSelectorValue}>
-								<SelectTrigger>
-									<SelectValue placeholder={`Select ${selector}...`} />
-								</SelectTrigger>
-								<SelectContent>
-									{currentOptions.map((option) => (
-										<SelectItem key={option} value={option}>
-											{option}
-										</SelectItem>
-									))}
-								</SelectContent>
-							</Select>
-						)}
+						<div
+							className={`grid transition-all duration-300 ease-out ${
+								selector !== "all" && hasOptions
+									? "grid-rows-[1fr] opacity-100"
+									: "grid-rows-[0fr] opacity-0"
+							}`}
+						>
+							<div className="overflow-hidden">
+								<div className="mt-3">
+									<Select
+										value={selectorValue}
+										onValueChange={setSelectorValue}
+									>
+										<SelectTrigger>
+											<SelectValue placeholder={`Select ${selector}...`} />
+										</SelectTrigger>
+										<SelectContent>
+											{currentOptions.map((option) => (
+												<SelectItem key={option} value={option}>
+													{option}
+												</SelectItem>
+											))}
+										</SelectContent>
+									</Select>
+								</div>
+							</div>
+						</div>
 
 						{selector !== "all" && !hasOptions && (
 							<p className="text-sm italic text-[hsl(var(--muted-foreground))]">
