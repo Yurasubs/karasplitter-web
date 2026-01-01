@@ -1,6 +1,6 @@
 "use client";
 
-import { Github, Music, HelpCircle } from "lucide-react";
+import { Github, Music, Library, HelpCircle } from "lucide-react";
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ResultPreview } from "@/components/ResultPreview";
@@ -68,6 +68,18 @@ export default function Home() {
 						>
 							<HelpCircle className="w-5 h-5" />
 							<span className="hidden sm:inline">How to use</span>
+						</Link>
+					</Button>
+					<Button variant="ghost" asChild>
+						<Link
+							href="https://kfx.kazeuta.com"
+							className="flex items-center gap-2"
+							aria-label="Showcase KaraFX Indonesia"
+						>
+							<Library className="w-5 h-5" />
+							<span className="hidden sm:inline">
+								Showcase KaraFX Indonesia
+							</span>
 						</Link>
 					</Button>
 				</div>
