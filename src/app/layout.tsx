@@ -59,6 +59,11 @@ export default function RootLayout({
 	return (
 		<html lang="en">
 			<head>
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `try{if(localStorage.getItem("theme")==="dark"||(!localStorage.getItem("theme")&&window.matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.setAttribute("data-theme","dark")}catch(e){}`,
+					}}
+				/>
 				{process.env.NODE_ENV === "development" && (
 					<Script
 						src="https://cdn.jsdelivr.net/npm/react-scan/dist/auto.global.js"
