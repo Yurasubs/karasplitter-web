@@ -88,7 +88,7 @@ export default function Home() {
 					<ThemeToggle />
 					<Button variant="ghost" size="icon" asChild>
 						<Link
-							href="https://github.com/Aruh1/karasplitter-web"
+							href="https://github.com/Yurasubs/karasplitter-web"
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label="GitHub Repository"
